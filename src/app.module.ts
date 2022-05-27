@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -22,8 +25,14 @@ import { UserModule } from './modules/user/user.module';
         synchronize: configService.isEnv('dev'),
       } as TypeOrmModuleOptions;
     },
-  }), UserModule],
+  }), UserModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
+    AppService
+  ],
 })
 export class AppModule { }

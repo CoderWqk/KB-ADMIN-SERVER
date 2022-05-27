@@ -21,7 +21,7 @@ export class LoggingInterceptor implements NestInterceptor {
 			.pipe(
 				tap(() =>
 					console.dir(
-						`用户${request.user ? request.user.email : '未登录'} 请求 ${request.url
+						`用户 ${request.user ? request.user.username : '未登录'} 请求 ${request.url
 						}，处理耗时：${Date.now() - after}ms`,
 					),
 				),
