@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { plainToInstance } from 'class-transformer';
 import { BusinessException, ErrorCode } from 'src/common/libs';
 import { UserEntity } from 'src/entities/user.entity';
 import { Like, Repository } from 'typeorm';
@@ -49,7 +50,9 @@ export class UserService {
    * @returns 
    */
   async getUserByUsername(username: string): Promise<UserEntity> {
-    return this.userRepository.findOne({ where: { username } });
+    const user = this.userRepository.findOne({ where: { username } });
+    
+    return plainToInstance(UserEntity, user, { enableImplicitConversion: true });
   }
 
   /**
@@ -58,7 +61,9 @@ export class UserService {
    * @returns 
    */
   async getUserById(id: number): Promise<UserEntity> {
-    return this.userRepository.findOne({ where: { id } });
+    const user = this.userRepository.findOne({ where: { id } });
+
+    return plainToInstance(UserEntity, user, { enableImplicitConversion: true });
   }
 
   /**

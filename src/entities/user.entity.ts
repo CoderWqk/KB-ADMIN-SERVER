@@ -10,7 +10,7 @@ export class UserEntity {
 	@Column({ type: 'varchar', length: 32, comment: '用户名' })
 	username: string;
 
-	@Exclude({ toPlainOnly: true }) // 输出屏蔽密码
+	@Exclude() // 输出屏蔽密码
 	@Column({ type: 'varchar', length: 200, comment: '密码' })
 	password: string;
 

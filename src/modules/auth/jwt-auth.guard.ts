@@ -12,8 +12,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
+    // 在这里添加自定义的身份证校验
+    // 比如调用super.login（请求）来建立会话。
     const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),
       context.getClass()
@@ -25,7 +25,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   handleRequest(err, user, info) {
-    // You can throw an exception based on either "info" or "err" arguments
+    // 你可以根据参数 info、err 抛出异常
     if (err || !user) {
       BusinessException.throwBusinessException(ErrorCode.ERR_10003());
     }
