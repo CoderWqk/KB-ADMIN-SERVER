@@ -1,0 +1,26 @@
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Logger } from './Log4js.util';
+
+@Injectable()
+export class TransformInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
+    const req = context.getArgByIndex(1).req;
+    
+    return next.handle().pipe(
+      map(data => {
+        const logFormat = ` <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        RequestOriginal: ${req.originalUrl}
+        Method: ${req.method}
+        IP: ${req.ip}
+        User: ${JSON.stringify(req.user)}
+        Response:\n ${JSON.stringify(data.data)}
+        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
+        Logger.info(logFormat);
+        Logger.access(logFormat);
+        return data;
+      })
+    )
+  }
+}
