@@ -1,14 +1,18 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+
 import { LoggingInterceptor } from './common/libs';
 import { logger } from './common/libs/Log4js/Logger.middleware';
 import { setupSwagger } from './swagger';
-import * as express from 'express';
 import { TransformInterceptor } from './common/libs/Log4js/Log4js.interceptor';
 import { HttpExceptionsFilter } from './common/libs/log4js/http-exceptions-filter';
 import { ExceptionsFilter } from './common/libs/log4js/exceptions-filter';
 import { Logger } from './common/libs/Log4js/Log4js.util';
+
+import helmet from 'helmet';
+
+import * as express from 'express';
 import * as Chalk from 'chalk';
 
 async function bootstrap() {
@@ -17,6 +21,9 @@ async function bootstrap() {
 	});
 	// Swagger
 	setupSwagger(app);
+
+	// web 安全，防常见漏洞
+  app.use(helmet());
 
 	// 耗时统计的横切面
 	app.useGlobalInterceptors(new LoggingInterceptor());
