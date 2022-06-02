@@ -25,19 +25,19 @@ async function bootstrap() {
 	setupSwagger(app);
 
 	// web 安全，防常见漏洞
-  app.use(helmet());
+	app.use(helmet());
 
 	// 防止跨站请求伪造
-  // 设置 csrf 保存 csrfToken
-  // app.use(csurf())
+	// 设置 csrf 保存 csrfToken
+	// app.use(csurf())
 
 	// 设置访问频率
-  app.use(
-    rateLimit({
-      windowMs: 15, // 15分钟
-      max: 1000, // 限制15分钟内最多只能访问1000次
-    }),
-  )
+	app.use(
+		rateLimit({
+			windowMs: 15, // 15分钟
+			max: 1000, // 限制15分钟内最多只能访问1000次
+		}),
+	)
 
 	// 耗时统计的横切面
 	app.useGlobalInterceptors(new LoggingInterceptor());
