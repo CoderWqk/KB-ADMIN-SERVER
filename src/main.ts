@@ -14,6 +14,7 @@ import helmet from 'helmet';
 
 import * as express from 'express';
 import * as Chalk from 'chalk';
+import * as csurf from 'csurf';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
@@ -24,6 +25,10 @@ async function bootstrap() {
 
 	// web 安全，防常见漏洞
   app.use(helmet());
+
+	// 防止跨站请求伪造
+  // 设置 csrf 保存 csrfToken
+  // app.use(csurf())
 
 	// 耗时统计的横切面
 	app.useGlobalInterceptors(new LoggingInterceptor());
