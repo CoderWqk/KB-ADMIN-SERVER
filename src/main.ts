@@ -35,7 +35,7 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 15, // 15分钟
-      max: 1, // 限制15分钟内最多只能访问1000次
+      max: 1000, // 限制15分钟内最多只能访问1000次
     }),
   )
 
