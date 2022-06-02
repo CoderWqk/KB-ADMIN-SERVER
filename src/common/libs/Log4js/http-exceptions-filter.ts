@@ -8,7 +8,10 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const status = exception.getStatus();
+    console.log(exception,'sss')
     const exceptionResponse = exception.getResponse();
+    console.log(exceptionResponse,'exceptionResponse');
+    
 
     const logFormat = `
         -----------------------------------------------------------------------
@@ -21,8 +24,8 @@ export class HttpExceptionsFilter implements ExceptionFilter {
         `
     Logger.info(logFormat)
     response.status(status).json({
-      status: exceptionResponse.status,
-      msg: exceptionResponse.msg
+      status: exceptionResponse?.statusCode || exception.statusCode,
+      msg: exceptionResponse?.message || exception.message
     })
   }
 }

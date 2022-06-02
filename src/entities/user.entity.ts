@@ -1,22 +1,33 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
+import { Status } from "src/common/enums/common.enums";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity } from "./base.entity";
 
 
 @Entity({ name: 'user' })
-export class UserEntity {
-	@PrimaryGeneratedColumn()
-	id: number;
+export class UserEntity extends BaseEntity {
+	@ApiProperty({ type: String, description: 'id' })
+	@PrimaryGeneratedColumn({ type: 'bigint' })
+	public id: number;
 
-	@Column({ type: 'varchar', length: 32, comment: '用户名' })
-	username: string;
+	@ApiProperty({ type: String, description: '用户名' })
+	@Column({ type: 'varchar', length: 32, nullable: false, comment: '用户名' })
+	public username: string;
 
-	@Exclude() // 输出屏蔽密码
-	@Column({ type: 'varchar', length: 200, comment: '密码' })
-	password: string;
+	@Exclude({ toPlainOnly: true }) // 输出屏蔽密码
+	@Column({ type: 'varchar', length: 200, nullable: false, comment: '密码' })
+	public password: string;
 
-	@Column({ type: 'varchar', length: 200, comment: '昵称' })
-	nickname: string;
+	@ApiProperty({ type: String, description: '昵称' })
+	@Column({ type: 'varchar', default: '', length: 200, nullable: true, comment: '昵称' })
+	public nickname: string;
 
-	@Column({ type: 'tinyint', comment: '是否启用(0.否、1.是)' })
-	status: number;
+	@ApiProperty({ type: String, description: 'Email' })
+	@Column({ type: 'varchar', default: '', length: 200, nullable: true, comment: 'Email' })
+	public email: string;
+
+	@ApiProperty({ type: Number, description: '[所属状态]：1.有效、0.禁用' })
+	@Column({ type: 'tinyint', default: Status.NORMAL, comment: '[所属状态]：1.有效、0.禁用' })
+	public status: number;
 }

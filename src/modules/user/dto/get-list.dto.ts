@@ -8,6 +8,6 @@ export class getUserListDto extends Pagination {
   @ApiProperty({ description: '昵称', required: false })
   readonly nickname?: string;
 
-  @ApiProperty({ description: '是否启用', required: false })
+  @ApiProperty({ description: '[所属状态]：1.有效、0.禁用', required: false })
   readonly status?: number;
 }

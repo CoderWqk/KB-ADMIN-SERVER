@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiResult } from 'src/common/libs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { getUserListDto } from './dto/get-list.dto';
@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('用户模块')
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
