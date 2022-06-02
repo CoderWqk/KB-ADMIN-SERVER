@@ -11,6 +11,7 @@ import { ExceptionsFilter } from './common/libs/log4js/exceptions-filter';
 import { Logger } from './common/libs/Log4js/Log4js.util';
 
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 import * as express from 'express';
 import * as Chalk from 'chalk';
@@ -29,6 +30,14 @@ async function bootstrap() {
 	// 防止跨站请求伪造
   // 设置 csrf 保存 csrfToken
   // app.use(csurf())
+
+	// 设置访问频率
+  app.use(
+    rateLimit({
+      windowMs: 15, // 15分钟
+      max: 1, // 限制15分钟内最多只能访问1000次
+    }),
+  )
 
 	// 耗时统计的横切面
 	app.useGlobalInterceptors(new LoggingInterceptor());
