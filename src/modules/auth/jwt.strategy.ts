@@ -20,6 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate({ sub }, done) {
     const user = await this.userService.getUserById(sub);
+    
     if(!user) {
       BusinessException.throwBusinessException(ErrorCode.ERR_10003());
     }

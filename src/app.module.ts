@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -25,7 +26,7 @@ import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
         synchronize: configService.isEnv('dev'),
       } as TypeOrmModuleOptions;
     },
-  }), UserModule, AuthModule],
+  }), UserModule, AuthModule, SharedModule],
   controllers: [AppController],
   providers: [
     {

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { BusinessException, ErrorCode } from 'src/common/libs';
 import { UserEntity } from 'src/entities/user.entity';
-import { Like, Repository } from 'typeorm';
+import { UtilsService } from 'src/shared/services/utils.service';
+import { EntityManager, Like, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { getUserListDto } from './dto/get-list.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,7 +13,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectEntityManager() private entityManager: EntityManager,
+    private utilsService: UtilsService
   ) { }
 
 
@@ -69,10 +72,13 @@ export class UserService {
   /**
    * 新增用户
    * @param payload 
-   * @returns 
    */
-  async add(payload: CreateUserDto): Promise<UserEntity> {
-    const { username } = payload;
+  async add(payload: CreateUserDto): Promise<UserEntity | any> {
+    const { username, password, confirmPassword, nickname, email, phone } = payload;
+    
+    if (password !== confirmPassword) {
+      BusinessException.throwBusinessException(ErrorCode.ERR_10007());
+    }
 
     const user = await this.getUserByUsername(username);
 
@@ -80,7 +86,22 @@ export class UserService {
       BusinessException.throwBusinessException(ErrorCode.ERR_10006());
     }
 
-    return await this.userRepository.save(payload);
+    await this.entityManager.transaction(async (manager) => {
+      const salt = this.utilsService.generateRandomValue(32);
+
+      const pwd = this.utilsService.md5(`${password + salt}`);
+
+      const u = manager.create(UserEntity, {
+        username,
+        password: pwd,
+        nickname,
+        email,
+        phone,
+        salt
+      });
+
+      return await this.userRepository.save(u);
+    });
   }
 
   /**
@@ -96,7 +117,28 @@ export class UserService {
       BusinessException.throwBusinessException(ErrorCode.ERR_10005());
     }
 
-    return await this.userRepository.update(id, payload);
+    const { password, confirmPassword, nickname, email, phone } = payload;
+
+    if (password !== confirmPassword) {
+      BusinessException.throwBusinessException(ErrorCode.ERR_10007());
+    }
+
+    const pwd = this.utilsService.md5(`${password + user.salt}`);
+
+    if (pwd !== user.password) {
+      BusinessException.throwBusinessException(ErrorCode.ERR_10004());
+    }
+
+    await this.entityManager.transaction(async (manager) => {
+      await manager.update(UserEntity, user.id, {
+        username: user.username,
+        password: pwd,
+        nickname,
+        email,
+        phone,
+        salt: user.salt
+      })
+    })
   }
 
   /**

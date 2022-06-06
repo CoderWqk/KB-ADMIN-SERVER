@@ -25,4 +25,7 @@ export class ErrorCode {
   public static ERR_10006() {
     return { code: -10006, message: '数据已存在，操作失败' };
   }
+  public static ERR_10007() {
+    return { code: -10007, message: '两次输入密码不一致，请重试' };
+  }
 }

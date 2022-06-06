@@ -20,8 +20,8 @@ export class ExceptionsFilter implements ExceptionFilter {
       `
     Logger.error(logFormat)
     response.status(status).json({
-      status: status >= 500 ? -10001 : status,
-      msg: `${status >= 500 ? '系统错误' : 'Client Error'}`,
+      status: status,
+      msg: `Service Error: ${exception}`
     })
   }
 }
