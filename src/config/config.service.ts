@@ -13,8 +13,8 @@ export class ConfigService {
   }
 
   // 根据key获取value
-  get(key: string): string {
-    return this.envConfig[key];
+  get(key: string): any {
+    return this.envConfig[key]
   }
 
   // 可以写方法处理env变量
