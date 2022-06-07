@@ -28,4 +28,7 @@ export class ErrorCode {
   public static ERR_10007() {
     return { code: -10007, message: '两次输入密码不一致，请重试' };
   }
+  public static ERR_10008() {
+    return { code: -10008, message: '填写验证码有误' };
+  }
 }

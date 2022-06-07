@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import * as CryptoJS from 'crypto-js';
-import { customAlphabet } from "nanoid";
+import { customAlphabet, nanoid } from "nanoid";
 
 @Injectable()
 export class UtilsService {
@@ -32,6 +32,14 @@ export class UtilsService {
    */
   public md5(payload: string): string {
     return CryptoJS.MD5(payload).toString();
+  }
+
+  /**
+   * 生成一个UUID
+   * @returns 
+   */
+  public generateUUID(): string {
+    return nanoid();
   }
 
   /**
