@@ -21,4 +21,37 @@ export class RedisService {
     }
     return this.clients.get(name) as Redis;
   }
+
+  /**
+   * 根据 key 取值
+   * @param key 
+   * @returns 
+   */
+  async get(key: string): Promise<string> {
+    if (!key || key === '*') return null;
+    return await this.getRedis().get(key);
+  }
+
+  /**
+   * 设置 key 的值为 val，有效期为（60*seconds）s
+   * @param key 
+   * @param val 
+   * @param seconds 
+   * @returns 
+   */
+  async set(key: string, val: string, seconds?: number): Promise<'OK' | null> {
+    if (!seconds) return await this.getRedis().set(key, val);
+    return await this.getRedis().set(key, val, 'EX', 60 * seconds);
+  }
+
+  /**
+   * 根据 keys 删除值
+   * @param keys 
+   * @returns 
+   */
+  async del(keys: string | string[]): Promise<number> {
+    if (!keys || keys === '*') return 0;
+    if (typeof keys === 'string') keys = [keys];
+    return await this.getRedis().del(...keys);
+  }
 }
