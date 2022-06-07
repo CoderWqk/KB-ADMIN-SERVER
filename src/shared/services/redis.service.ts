@@ -33,7 +33,7 @@ export class RedisService {
   }
 
   /**
-   * 设置 key 的值为 val，有效期为（60*seconds）s
+   * 设置 key 的值为 val，有效期为（seconds）s
    * @param key 
    * @param val 
    * @param seconds 
@@ -41,7 +41,7 @@ export class RedisService {
    */
   async set(key: string, val: string, seconds?: number): Promise<'OK' | null> {
     if (!seconds) return await this.getRedis().set(key, val);
-    return await this.getRedis().set(key, val, 'EX', 60 * seconds);
+    return await this.getRedis().set(key, val, 'EX', seconds);
   }
 
   /**
