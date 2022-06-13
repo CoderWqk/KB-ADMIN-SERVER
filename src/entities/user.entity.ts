@@ -6,7 +6,7 @@ import { BaseEntity } from "./base.entity";
 
 @Entity({ name: 'user' })
 export class UserEntity extends BaseEntity {
-	@ApiProperty({ type: String, description: 'id' })
+	@ApiProperty({ type: Number, description: 'id' })
 	@PrimaryGeneratedColumn({ type: 'bigint' })
 	public id: number;
 
@@ -34,7 +34,7 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'phone', default: '', length: 11, comment: '用户手机号码' })
   public phone: string
 
-	@ApiProperty({ type: Number, description: '[所属状态]：1.有效、0.禁用' })
-	@Column({ type: 'tinyint', default: Status.NORMAL, comment: '[所属状态]：1.有效、0.禁用' })
+	@ApiProperty({ type: Number, description: '[所属状态]：0.禁用、1.有效' })
+	@Column({ type: 'tinyint', default: Status.NORMAL, comment: '[所属状态]：0.禁用、1.有效' })
 	public status: number;
 }

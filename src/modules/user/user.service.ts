@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain } from 'class-transformer';
 import { BusinessException, ErrorCode } from 'src/common/libs';
 import { UserEntity } from 'src/entities/user.entity';
 import { UtilsService } from 'src/shared/services/utils.service';
@@ -32,10 +32,10 @@ export class UserService {
    * @param payload 
    * @returns 
    */
-  async getList(payload: getUserListDto): Promise<UserEntity[]> {
+  async getList(payload: getUserListDto) {
     const { username, nickname, status, size, current } = payload;
     
-    return await this.userRepository.find({
+    return await this.userRepository.findAndCount({
       where: {
         username: Like(`%${username || ''}%`),
         nickname: Like(`%${nickname || ''}%`),
@@ -44,7 +44,7 @@ export class UserService {
       order: { id: 'DESC' },
       skip: size * (current - 1),
       take: size
-    });
+    })
   }
 
   /**
@@ -53,9 +53,7 @@ export class UserService {
    * @returns 
    */
   async getUserByUsername(username: string): Promise<UserEntity> {
-    const user = this.userRepository.findOne({ where: { username } });
-    
-    return plainToInstance(UserEntity, user, { enableImplicitConversion: true });
+    return await this.userRepository.findOne({ where: { username } });
   }
 
   /**
@@ -64,9 +62,7 @@ export class UserService {
    * @returns 
    */
   async getUserById(id: number): Promise<UserEntity> {
-    const user = this.userRepository.findOne({ where: { id } });
-
-    return plainToInstance(UserEntity, user, { enableImplicitConversion: true });
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   /**
@@ -146,7 +142,7 @@ export class UserService {
    * @param id 
    * @returns 
    */
-  async delete(id: number): Promise<UserEntity | any> {
+  async remove(id: number): Promise<UserEntity | any> {
     const user = await this.getUserById(id);
 
     if (!user) {

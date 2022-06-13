@@ -17,7 +17,7 @@ export class CreateUserDto {
   @IsString({ message: ' confirmPassword 类型错误，正确类型 string' })
   confirmPassword: string;
 
-  @ApiProperty({ description: '昵称' })
+  @ApiProperty({ description: '昵称', required: false })
   @IsString()
   readonly nickname: string;
 
